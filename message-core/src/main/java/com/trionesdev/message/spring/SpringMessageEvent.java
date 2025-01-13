@@ -1,18 +1,21 @@
 package com.trionesdev.message.spring;
 
 import com.trionesdev.message.core.Message;
+import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
 import java.time.Clock;
 
-public class TrionesSpringMessageEvent extends ApplicationEvent {
-    private Message message;
-    public TrionesSpringMessageEvent(Object source) {
+@Getter
+public class SpringMessageEvent extends ApplicationEvent {
+    private final Message message;
+
+    public SpringMessageEvent(Object source) {
         super(source);
         this.message = (Message) source;
     }
 
-    public TrionesSpringMessageEvent(Object source, Clock clock) {
+    public SpringMessageEvent(Object source, Clock clock) {
         super(source, clock);
         this.message = (Message) source;
     }

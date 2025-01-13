@@ -1,5 +1,5 @@
 package com.trionesdev.message.core;
 
 public interface MessageListener {
-    void onMessage(Message message, String topic);
+    void onMessage(Message message);
 }
