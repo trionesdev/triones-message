@@ -20,6 +20,7 @@
 2. 配置消息中间件
 
 一般情况下，直接使用默认配置即可，有需要的可以根据自己的需求进行配置
+
 3. 注册监听
 ```java
 import com.trionesdev.message.core.Message;
