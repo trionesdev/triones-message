@@ -49,8 +49,10 @@ public class RedisMessageContainer implements MessageContainer {
     }
 
     @Override
-    public void publish(String topic, Message message) {
+    public void publish(String topic, String payload) {
+        Message message = new Message();
         message.setTopic(topic);
+        message.setPayload(payload);
         publish(message);
     }
 
@@ -60,8 +62,10 @@ public class RedisMessageContainer implements MessageContainer {
     }
 
     @Override
-    public void broadcast(String topic, Message message) {
+    public void broadcast(String topic, String payload) {
+        Message message = new Message();
         message.setTopic(topic);
+        message.setPayload(payload);
         broadcast(message);
     }
 
