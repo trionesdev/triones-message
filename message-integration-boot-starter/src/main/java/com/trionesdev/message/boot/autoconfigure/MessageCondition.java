@@ -16,8 +16,8 @@ public class MessageCondition extends SpringBootCondition {
     @Override
     public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
         String sourceClass = "";
-        if (metadata instanceof ClassMetadata classMetadata) {
-            sourceClass = classMetadata.getClassName();
+        if (metadata instanceof ClassMetadata ) {
+            sourceClass = ((ClassMetadata)metadata).getClassName();
         }
         ConditionMessage.Builder message = ConditionMessage.forCondition("Message", sourceClass);
         Environment environment = context.getEnvironment();

@@ -11,13 +11,14 @@ public class MessageConfigurations {
 
     static {
         Map<MessageType, String> mappings = new EnumMap<>(MessageType.class);
-
+        mappings.put(MessageType.SPRING, SpringMessageConfiguration.class.getName());
+        mappings.put(MessageType.REDIS, RedisMessageConfiguration.class.getName());
         MAPPINGS = Collections.unmodifiableMap(mappings);
     }
 
-    static String getConfigurationClass(MessageType lockType) {
-        String configurationClassName = MAPPINGS.get(lockType);
-        Assert.state(configurationClassName != null, () -> "Unknown message type " + lockType);
+    static String getConfigurationClass(MessageType messageType) {
+        String configurationClassName = MAPPINGS.get(messageType);
+        Assert.state(configurationClassName != null, () -> "Unknown message type " + messageType);
         return configurationClassName;
     }
 

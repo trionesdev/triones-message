@@ -1,24 +1,28 @@
-package com.trionesdev.message.spring;
+package com.trionesdev.message.integration.spring;
 
 import com.trionesdev.message.core.Message;
 import com.trionesdev.message.core.MessageContainer;
 import com.trionesdev.message.core.MessageListener;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@RequiredArgsConstructor
+
 public class SpringMessageContainer implements MessageContainer {
     private final ApplicationEventPublisher eventPublisher;
+
+    public SpringMessageContainer(ApplicationEventPublisher eventPublisher) {
+        this.eventPublisher = eventPublisher;
+    }
+
     @Getter
     private final Map<String, MessageListener> messageListeners = new HashMap<>();
 
     @Override
     public void publish(Message message) {
-        eventPublisher.publishEvent(message);
+        eventPublisher.publishEvent(new SpringMessageEvent(message));
     }
 
     @Override

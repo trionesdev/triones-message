@@ -1,4 +1,4 @@
-package com.trionesdev.message.spring;
+package com.trionesdev.message.integration.spring;
 
 import com.trionesdev.message.core.Message;
 import com.trionesdev.message.core.MessageListener;
