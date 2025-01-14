@@ -26,11 +26,17 @@ import java.util.Objects;
 
 @Slf4j
 public class RedisMessageContainer implements MessageContainer {
+    private final RedisMessageProperties redisProperties;
     private final StringRedisTemplate stringRedisTemplate;
     private final RedisMessageListenerContainer redisMessageListenerContainer;
     private final StreamMessageListenerContainer<String, ObjectRecord<String, Message>> streamMessageListenerContainer;
 
-    public RedisMessageContainer(StringRedisTemplate stringRedisTemplate, RedisMessageListenerContainer redisMessageListenerContainer, StreamMessageListenerContainer<String, ObjectRecord<String, Message>> streamMessageListenerContainer) {
+    public RedisMessageContainer(
+            RedisMessageProperties properties,
+            StringRedisTemplate stringRedisTemplate,
+            RedisMessageListenerContainer redisMessageListenerContainer,
+            StreamMessageListenerContainer<String, ObjectRecord<String, Message>> streamMessageListenerContainer) {
+        this.redisProperties = properties;
         this.stringRedisTemplate = stringRedisTemplate;
         this.redisMessageListenerContainer = redisMessageListenerContainer;
         this.streamMessageListenerContainer = streamMessageListenerContainer;
@@ -38,7 +44,7 @@ public class RedisMessageContainer implements MessageContainer {
 
     @Override
     public void publish(Message message) {
-        Record<String, Message> record = StreamRecords.objectBacked(message).withStreamKey("message");
+        Record<String, Message> record = StreamRecords.objectBacked(message).withStreamKey(redisProperties.getStreamKey());
         stringRedisTemplate.opsForStream().add(record);
     }
 
@@ -63,8 +69,8 @@ public class RedisMessageContainer implements MessageContainer {
     public void addQueueListener(MessageListener listener, String topic) {
         streamListenerInit(stringRedisTemplate);
         streamMessageListenerContainer.receiveAutoAck(
-                Consumer.from("test", "localhost"),
-                StreamOffset.create("message", ReadOffset.lastConsumed()),
+                Consumer.from(redisProperties.getGroup(), redisProperties.getConsumerName()),
+                StreamOffset.create(redisProperties.getStreamKey(), ReadOffset.lastConsumed()),
                 new StreamListener<String, ObjectRecord<String, Message>>() {
                     @Override
                     public void onMessage(ObjectRecord<String, Message> message) {
@@ -86,10 +92,10 @@ public class RedisMessageContainer implements MessageContainer {
 
     private void streamListenerInit(StringRedisTemplate redisTemplate) {
         List<String> consumers = new ArrayList<>();
-        consumers.add("test");
+        consumers.add(redisProperties.getConsumerName());
         StreamInfo.XInfoGroups infoGroups = null;
         try {
-            infoGroups = redisTemplate.opsForStream().groups("message");
+            infoGroups = redisTemplate.opsForStream().groups(redisProperties.getGroup());
         } catch (RedisSystemException | InvalidDataAccessApiUsageException ex) {
             log.error("group key not exist or commend error", ex);
         }
@@ -102,7 +108,7 @@ public class RedisMessageContainer implements MessageContainer {
                 }
             }
             if (!consumerExist) {
-                redisTemplate.opsForStream().createGroup("message", consumer);
+                redisTemplate.opsForStream().createGroup(redisProperties.getGroup(), consumer);
             }
         }
 

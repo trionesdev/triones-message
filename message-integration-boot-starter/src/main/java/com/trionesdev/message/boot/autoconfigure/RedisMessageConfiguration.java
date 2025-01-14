@@ -29,7 +29,7 @@ import java.util.Objects;
 @ConditionalOnMissingBean({MessageContainer.class})
 @Conditional({MessageCondition.class})
 public class RedisMessageConfiguration {
-
+    private final MessageProperties messageProperties;
     @Bean
     RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
@@ -57,6 +57,6 @@ public class RedisMessageConfiguration {
     public MessageContainer redisMessageContainer(StringRedisTemplate redisTemplate,
                                                   RedisMessageListenerContainer redisMessageListenerContainer,
                                                   StreamMessageListenerContainer<String, ObjectRecord<String, Message>> streamMessageListenerContainer) {
-        return new RedisMessageContainer(redisTemplate, redisMessageListenerContainer, streamMessageListenerContainer);
+        return new RedisMessageContainer(messageProperties.getRedis(),redisTemplate, redisMessageListenerContainer, streamMessageListenerContainer);
     }
 }
