@@ -43,7 +43,7 @@
       <dependency>
         <groupId>com.trionesdev.message</groupId>
         <artifactId>message-integration</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.0-SNAPSHOT</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
